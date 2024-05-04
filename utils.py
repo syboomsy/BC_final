@@ -42,6 +42,7 @@ def randomize_delay(graph:ntx.Graph, min_d, max_d, inplace=True):
 
 def plot_graph(
     graph:ntx.Graph, 
+    layout,
     special_nodes:Iterable,
     save_name:str='',
     save_dir:str=None, 
@@ -56,6 +57,7 @@ def plot_graph(
 
     ntx.draw(
         graph,
+        pos=layout,
         node_color=node_colors, 
         with_labels=True,
         edge_color=edge_colors, 
@@ -85,9 +87,14 @@ def complete_graph(n_node):
 def complete_bipartite(n1, n2):
     return ntx.complete_bipartite_graph(n1, n2)
 
+def random_acyclic_graph(n_node, edge_p):
+    return ntx.erdos_renyi_graph(n_node, edge_p)
+
 
 if __name__ == '__main__':
 
+    ag = random_acyclic_graph(20, 0.5)
+    print(ag)
     # show_graph(
     #     randomize_delay(ntx.complete_graph(20), 1, 20),
     #     [1,2,3],
