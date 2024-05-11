@@ -61,11 +61,12 @@ def batch_test(
     rand_mean_sum = sum(rand_mean)/ trail_num
     rand_minmax_sum = sum(rand_minmax)/ trail_num
 
-    x = range(2)
-    bar_width = 0.2
-    plt.bar(x, [gred_mean_sum, gred_minmax_sum], width=bar_width, label=['greedy mean metric', 'random mean metric'])
+    x = [0,1]
+    bar_width = 0.15
+    plt.figure(figsize=(8, 6))
+    plt.bar(x, [gred_mean_sum, gred_minmax_sum], width=bar_width, label=['greedy mean metric', 'random mean metric'],color=['tab:green', 'tab:orange'])
 
-    plt.bar([i + bar_width for i in x], [rand_mean_sum, rand_minmax_sum], width=bar_width, label=['greedy minmax metric', 'random minmax metric'])
+    plt.bar([i + bar_width for i in x], [rand_mean_sum, rand_minmax_sum], width=bar_width, label=['greedy minmax metric', 'random minmax metric'],color=['tab:blue', 'tab:red'])
     # # for i, value in enumerate([gred_mean_sum, gred_minmax_sum, rand_mean_sum, rand_minmax_sum]):
     #     plt.text(i % 2 + i // 2 * bar_width, value + 0.2, str(value), ha='center')
 
@@ -74,9 +75,36 @@ def batch_test(
     plt.title('Comparison of metric, node_num=30, edge_p=0.4, epoch=100')
     plt.xticks([i + 0.5*bar_width for i in x], ['greedy', 'random'])  # Assuming you want A and B labels for x-axis
     plt.legend()
+    plt.xlim(-0.5,1.5)
+    plt.ylim(0, 4)
 
     plt.savefig('./batch_test.png')
     plt.clf()
+
+    #plot training log for the two algos
+    g_mean_log = []
+    g_minmax_log = []
+    r_mean_log = []
+    r_minmax_log = []
+    for i in range(trail_num):
+        g_mean_log.append(sum(greed_mean[:(i+1)]) / (i+1))
+        g_minmax_log.append(sum(greed_minmax[:(i+1)]) / (i+1))
+        r_mean_log.append(sum(rand_mean[:(i+1)]) / (i+1))
+        r_minmax_log.append(sum(rand_minmax[:(i+1)]) / (i+1))
+    
+    x_idxs = list(range(1,trail_num+1,1))
+    plt.plot(x_idxs, g_mean_log, color='blue', label='greed mean delay')
+    plt.plot(x_idxs, g_minmax_log, color='red', label='greedy minmax delay')
+    plt.plot(x_idxs, r_mean_log, color='green', label='random mean delay')
+    plt.plot(x_idxs, r_minmax_log, color='purple', label='random minmax delay')
+
+    # Add a legend
+    plt.xlabel('Epoch')
+    plt.ylabel('metric values')
+    plt.title('Cumulative average metric')
+    plt.legend()
+    plt.savefig('./train_curve')
+
 
 
 
